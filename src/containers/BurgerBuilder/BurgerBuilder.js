@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+
+import axios from '../../axios-orders';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
@@ -62,11 +64,31 @@ class BurgerBuilder extends Component {
 
   purchaseHandler = () => {
     this.setState({ purchasing: true });
-  }
+  };
 
   cancelPurchasingHandler = () => {
     this.setState({ purchasing: false });
-  }
+  };
+
+  purchaseContinueHandler = () => {
+    const order = {
+      ingredients: this.state.ingredients,
+      totalPrice: this.state.totalPrice,
+      customer: {
+        name: 'Felipe',
+        address: {
+          street: 'TestStreet 1',
+          zipCode: '5830292',
+          country: 'Brazil'
+        },
+        email: 'test@test.com'
+      },
+      deliveryMethod: 'fastest'
+    }
+    axios.post('/orders.json', order)
+      .then(response => console.log(response))
+      .catch(error => console.log(error));
+  };
 
   render () {
     const disabledInfo = {...this.state.ingredients};
@@ -77,7 +99,11 @@ class BurgerBuilder extends Component {
     return (
       <React.Fragment>
         <Modal show={this.state.purchasing} modalClose={this.cancelPurchasingHandler}>
-          <OrderSummary ingredients={this.state.ingredients} price={this.state.totalPrice} btnClick={this.cancelPurchasingHandler}/>
+          <OrderSummary
+            ingredients={this.state.ingredients}
+            price={this.state.totalPrice}
+            cancelBtn={this.cancelPurchasingHandler}
+            continueBtn={this.purchaseContinueHandler}/>
         </Modal>
         <Burger ingredients={this.state.ingredients}/>
         <BuildControls
