@@ -7,6 +7,7 @@ class Modal extends Component {
   shouldComponentUpdate = (nextProps, nextState) => (
     (nextProps.show !== this.props.show) || (nextProps.children !== this.props.children)
   );
+
   render() {
     return (
       <React.Fragment>
@@ -21,6 +22,6 @@ class Modal extends Component {
       </React.Fragment>
     );
   };
-};
+}
 
 export default Modal;
