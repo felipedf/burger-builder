@@ -80,34 +80,7 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    this.setState({ loading: true });
-    const order = {
-      ingredients: this.state.ingredients,
-      totalPrice: this.state.totalPrice,
-      customer: {
-        name: 'Felipe',
-        address: {
-          street: 'TestStreet 1',
-          zipCode: '5830292',
-          country: 'Brazil'
-        },
-        email: 'test@test.com'
-      },
-      deliveryMethod: 'fastest'
-    }
-    axios.post('/orders.json', order)
-      .then(response => {
-        this.setState({
-          loading: false,
-          purchasing: false
-        });
-      })
-      .catch(error => {
-        this.setState({
-          loading: false,
-          purchasing: false
-        });
-      });
+    this.props.history.push('/checkout');
   };
 
   render () {
@@ -146,16 +119,11 @@ class BurgerBuilder extends Component {
       );
     };
 
-    if (this.state.loading) {
-      orderSummary = <Spinner/>;
-    }
-
     return (
       <React.Fragment>
         <Modal
           show={this.state.purchasing}
-          modalClose={this.cancelPurchasingHandler}
-          loading={this.state.loading}>
+          modalClose={this.cancelPurchasingHandler}>
             {orderSummary}
         </Modal>
         {burger}
