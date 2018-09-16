@@ -4,6 +4,8 @@ import axios from '../../../axios-orders';
 import classes from './ContactData.css';
 import Button from '../../../components/UI/Button/Button';
 import Input from '../../../components/UI/Input/Input';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import { withRouter } from 'react-router-dom';
 
 class ContactData extends Component {
   state = {
@@ -135,6 +137,7 @@ class ContactData extends Component {
     axios.post('/orders.json', order)
       .then(response => {
         this.setState({ loading: false });
+        this.props.history.push('/');
       })
       .catch(error => {
         this.setState({ loading: false });
@@ -150,8 +153,8 @@ class ContactData extends Component {
       })
     }
 
-    return (
-      <div className={classes.ContactData}>
+    let form = (
+      <React.Fragment>
         <h4>Enter you contact data</h4>
         <form onSubmit={this.handleOrderSubmit}>
           {formElementsArray.map(formElement => {
@@ -168,9 +171,19 @@ class ContactData extends Component {
           <Button btnType="Success">ORDER</Button>
           <Button></Button>
         </form>
+      </React.Fragment>
+    );
+
+
+    if (this.state.loading) {
+      form = <Spinner/>
+    }
+    return (
+      <div className={classes.ContactData}>
+        {form}
       </div>
     );
   }
 }
 
-export default ContactData;
+export default withRouter(ContactData);
