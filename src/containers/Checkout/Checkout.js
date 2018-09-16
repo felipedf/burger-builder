@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
 
-import axios from '../../axios-orders';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
+import ContactData from './ContactData/ContactData';
 
 class Checkout extends Component {
   state = {
@@ -11,30 +12,27 @@ class Checkout extends Component {
       meat: 1,
       cheese: 1,
       bacon: 1
-    }
+    },
+    totalPrice: 4
   };
 
-  handleContinueCheckout = () => {
-    const order = {
-      ingredients: this.state.ingredients,
-      totalPrice: this.state.totalPrice,
-      customer: {
-        name: 'Felipe',
-        address: {
-          street: 'TestStreet 1',
-          zipCode: '5830292',
-          country: 'Brazil'
-        },
-        email: 'test@test.com'
-      },
-      deliveryMethod: 'fastest'
+  componentDidMount() {
+    let newIngredients = {
+      ingredients: {}
+    };
+    const query = new URLSearchParams(this.props.location.search);
+    for ( let i in this.state.ingredients) {
+      newIngredients.ingredients[i] = query.get(i);
     }
-    axios.post('/orders.json', order)
-      .then(response => {
-      })
-      .catch(error => {
-      });
+    newIngredients['totalPrice'] = query.get('price');
+    this.setState({
+      ingredients: newIngredients.ingredients,
+      totalPrice: newIngredients.totalPrice
+    });
+  }
 
+  handleContinueCheckout = () => {
+    this.props.history.replace('/checkout/contact-data');
   }
 
   handleCancelCheckout = () => {
@@ -49,6 +47,9 @@ class Checkout extends Component {
           checkoutContinue={this.handleContinueCheckout}
           checkoutCancel={this.handleCancelCheckout}
         />
+      <Route
+        path={this.props.match.path + '/contact-data'}
+        render={() => <ContactData ingredients={this.state.ingredients} totalPrice={this.state.totalPrice}/>}/>
       </div>
     );
   }
