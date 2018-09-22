@@ -83,9 +83,12 @@ class ContactData extends Component {
             {value: 'cheapest', displayValue: 'Cheapest'}
           ]
         },
-        value: ''
+        value: 'fastest',
+        validation: {},
+        valid: true
       },
     },
+    formIsValid: false,
     loading: false
   }
 
@@ -109,7 +112,7 @@ class ContactData extends Component {
 
   handleInputChange = (inputID, e) => {
     const inputValue = e.target.value;
-    const orderForm = {
+    const updatedOrderForm = {
       ...this.state.orderForm,
       [inputID]: {
         ...this.state.orderForm[inputID],
@@ -118,7 +121,15 @@ class ContactData extends Component {
         touched: true
       },
     }
-    this.setState({orderForm});
+
+    let validForm = true;
+    for (let field in updatedOrderForm) {
+      validForm = updatedOrderForm[field].valid && validForm;
+    }
+    this.setState({
+      orderForm: updatedOrderForm,
+      formIsValid: validForm
+    });
   }
 
   handleOrderSubmit = (e) => {
@@ -168,7 +179,7 @@ class ContactData extends Component {
               changed={this.handleInputChange.bind(this, formElement.id)}
             />
           })}
-          <Button btnType="Success">ORDER</Button>
+          <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
           <Button></Button>
         </form>
       </React.Fragment>
