@@ -1,6 +1,7 @@
+import axios from '../../../axios-orders';
+import { connect } from 'react-redux';
 import React, { Component } from 'react'
 
-import axios from '../../../axios-orders';
 import classes from './ContactData.css';
 import Button from '../../../components/UI/Button/Button';
 import Input from '../../../components/UI/Input/Input';
@@ -90,7 +91,7 @@ class ContactData extends Component {
     },
     formIsValid: false,
     loading: false
-  }
+  };
 
   checkValidity(value, rules) {
     let isValid = true;
@@ -120,7 +121,7 @@ class ContactData extends Component {
         valid: this.checkValidity(inputValue, this.state.orderForm[inputID].validation),
         touched: true
       },
-    }
+    };
 
     let validForm = true;
     for (let field in updatedOrderForm) {
@@ -130,7 +131,7 @@ class ContactData extends Component {
       orderForm: updatedOrderForm,
       formIsValid: validForm
     });
-  }
+  };
 
   handleOrderSubmit = (e) => {
     e.preventDefault();
@@ -144,7 +145,7 @@ class ContactData extends Component {
       ingredients: this.props.ingredients,
       totalPrice: this.props.totalPrice,
       orderData: formData
-    }
+    };
     axios.post('/orders.json', order)
       .then(response => {
         this.setState({ loading: false });
@@ -153,7 +154,7 @@ class ContactData extends Component {
       .catch(error => {
         this.setState({ loading: false });
       });
-  }
+  };
 
   render() {
     const formElementsArray =[];
@@ -180,7 +181,6 @@ class ContactData extends Component {
             />
           })}
           <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
-          <Button></Button>
         </form>
       </React.Fragment>
     );
@@ -197,4 +197,11 @@ class ContactData extends Component {
   }
 }
 
-export default withRouter(ContactData);
+const mapStateToProps = state => (
+  {
+    ingredients: state.ingredients,
+    totalPrice: state.totalPrice
+  }
+);
+
+export default connect(mapStateToProps)(withRouter(ContactData));

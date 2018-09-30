@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 
 import axios from '../../axios-orders';
-import classes from './Orders.css';
 import Order from '../../components/Order/Order';
 import withErrorHandler from '../../middlewares/WithErrorHandler/WithErrorHandler';
 
 class Orders extends Component {
   state = {
     orders: {}
-  }
+  };
 
   componentDidMount() {
     axios.get('/orders.json')
