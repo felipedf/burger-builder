@@ -7,11 +7,11 @@ import thunk from 'redux-thunk';
 
 import './index.css';
 import App from './App';
-import reducer from './store/reducers/reducer';
+import burgerBuilderReducer from './store/reducers/burgerBuilderReducer';
 import registerServiceWorker from './registerServiceWorker';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(reducer, composeEnhancers(
+const store = createStore(burgerBuilderReducer, composeEnhancers(
   applyMiddleware(thunk)
 ));
 
