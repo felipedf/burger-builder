@@ -20,7 +20,7 @@ export const setIngredients = (ingredients) => {
     type: actionTypes.SET_INGREDIENTS,
     ingredients: ingredients
   }
-}
+};
 
 export const initIngredients = () => {
   return dispatch => {
@@ -32,10 +32,10 @@ export const initIngredients = () => {
         dispatch(fetchIngredientsFailed());
       })
   }
-}
+};
 
 export const fetchIngredientsFailed = () => (
   {
     type: actionTypes.FETCH_INGREDIENTS_FAILED
   }
-)
+);

@@ -14,7 +14,7 @@ const order = (props) => {
         }}>
         { `  ${ing}: (${props.ingredients[ing]})` }
       </span>
-    ))
+    ));
   return (
     <div className={classes.Order}>
       <p>Ingredients: {ingredients}</p>
