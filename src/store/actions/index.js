@@ -7,3 +7,6 @@ export {
   purhcaseBurger,
   fetchOrders
 } from './orderAction'
+export {
+  auth,
+} from './authAction'
