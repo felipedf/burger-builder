@@ -34,3 +34,36 @@ export const purhcaseBurger = orderData => (
       });
   }
 );
+
+const fetchOrdersSuccess = orders => (
+  {
+    type: actionTypes.FETCH_ORDERS_SUCCESS,
+    orders: orders
+  }
+);
+
+const fetchOrdersFail = error => (
+  {
+    type: actionTypes.FETCH_ORDERS_FAIL,
+    error: error
+  }
+);
+
+const fetchOrdersStart = () => (
+  {
+    type: actionTypes.FETCH_ORDERS_START
+  }
+);
+
+export const fetchOrders = () => {
+  return dispatch => {
+    dispatch(fetchOrdersStart());
+    axios.get('/orders.json')
+      .then(response => {
+        dispatch(fetchOrdersSuccess(response.data));
+      })
+      .catch( error => {
+        dispatch(fetchOrdersFail(error));
+      })
+  }
+};
