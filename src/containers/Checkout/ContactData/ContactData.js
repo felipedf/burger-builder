@@ -178,7 +178,6 @@ class ContactData extends Component {
       </React.Fragment>
     );
 
-
     if (this.props.loading) {
       form = <Spinner/>
     }
@@ -192,9 +191,9 @@ class ContactData extends Component {
 
 const mapStateToProps = state => (
   {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice,
-    loading: state.loading
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    loading: state.order.loading
   }
 );
 
