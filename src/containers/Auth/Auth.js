@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 
 import * as action from '../../store/actions';
 import classes from './Auth.css';
-import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
+import Input from '../../components/UI/Input/Input';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 class Auth extends Component {
   state = {
@@ -80,13 +81,13 @@ class Auth extends Component {
       this.state.authForm.password.value,
       this.state.isSignUp
     );
-  }
+  };
 
   handleSwitchAuthMode = () => {
     this.setState(prevState => (
       {isSignUp: !prevState.isSignUp}
     ))
-  }
+  };
 
   render() {
     const formElementsArray =[];
@@ -97,7 +98,7 @@ class Auth extends Component {
       })
     }
 
-    const form = formElementsArray.map(formElement => (
+    let form = formElementsArray.map(formElement => (
       <Input key={formElement.id}
         elementType={formElement.config.elementType}
         elementConfig={formElement.config.elementConfig}
@@ -108,9 +109,16 @@ class Auth extends Component {
         changed={this.handleInputChange.bind(this, formElement.id)}
       />
     ));
+    if (this.props.loading) form = <Spinner />;
+
+    let errorMessage = null;
+    if (this.props.error) {
+      errorMessage = <p>{this.props.error}</p>;
+    }
 
     return (
       <div className={classes.Auth}>
+        {errorMessage}
         <form onSubmit={this.handleFormSubmit}>
           {form}
           <Button btnType='Success'>Submit</Button>
@@ -127,7 +135,8 @@ class Auth extends Component {
 
 const mapStateToProps = state => (
   {
-
+    loading: state.auth.loading,
+    error: state.auth.error
   }
 );
 
