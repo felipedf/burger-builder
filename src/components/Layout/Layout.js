@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+
+import * as actions from '../../store/actions';
 import classes from './Layout.css';
+import { connect } from 'react-redux';
 import SideDrawer from '../Navigation/SideDrawer/SideDrawer';
 import Toolbar from '../Navigation/Toolbar/Toolbar';
 
@@ -17,10 +20,15 @@ class Layout extends Component {
   render () {
     return (
       <React.Fragment>
-        <Toolbar clicked={this.toggleSideDrawerCloseHandler}/>
+        <Toolbar
+          clicked={this.toggleSideDrawerCloseHandler}
+          isAuthenticated={this.props.isAuthenticated}
+          setAuthRedirectPath={this.props.onSetAuthRedirectPath} />
         <SideDrawer
           show={this.state.showSideDrawer}
-          close={this.toggleSideDrawerCloseHandler}/>
+          close={this.toggleSideDrawerCloseHandler}
+          isAuthenticated={this.props.isAuthenticated}
+          setAuthRedirectPath={this.props.onSetAuthRedirectPath} />
         <main className={classes.Content}>
           {this.props.children}
         </main>
@@ -29,4 +37,16 @@ class Layout extends Component {
   };
 };
 
-export default Layout;
+const mapStateToProps = state => (
+  {
+    isAuthenticated: state.auth.token !== null
+  }
+)
+
+const mapDispatchToProps = dispatch => (
+  {
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath())
+  }
+)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);

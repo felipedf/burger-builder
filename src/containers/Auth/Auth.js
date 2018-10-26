@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import * as action from '../../store/actions';
 import classes from './Auth.css';
 import Button from '../../components/UI/Button/Button';
 import Input from '../../components/UI/Input/Input';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import { updateObject, checkValidity } from '../../shared/utility';
 
 class Auth extends Component {
   state = {
@@ -42,35 +44,18 @@ class Auth extends Component {
     isSignUp: true
   };
 
-  checkValidity(value, rules) {
-    let isValid = true;
-
-    if (rules.required) {
-      isValid = (value.trim() !== '') && isValid;
-    }
-
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-
-    return isValid;
-  };
-
-  handleInputChange = (inputID, e) => {
+  handleInputChange = (inputId, e) => {
     const inputValue = e.target.value;
-    const updatedAuthForm = {
-      ...this.state.authForm,
-      [inputID]: {
-        ...this.state.authForm[inputID],
-        value: inputValue,
-        valid: this.checkValidity(inputValue, this.state.authForm[inputID].validation),
-        touched: true
-      }
-    };
+    const updatedAuthFormElem = updateObject(this.state.authForm[inputId], {
+      value: inputValue,
+      valid: checkValidity(inputValue, this.state.authForm[inputId].validation),
+      touched: true
+    });
+
+    const updatedAuthForm = updateObject(this.state.authForm, {
+      [inputId]: updatedAuthFormElem
+    });
+
     this.setState({ authForm: updatedAuthForm });
   };
 
@@ -116,8 +101,14 @@ class Auth extends Component {
       errorMessage = <p>{this.props.error}</p>;
     }
 
+    let authRedirect = null;
+    if (this.props.isAuthenticated) {
+      authRedirect = <Redirect to={this.props.authRedirectPath} />;
+    }
+
     return (
       <div className={classes.Auth}>
+        {authRedirect}
         {errorMessage}
         <form onSubmit={this.handleFormSubmit}>
           {form}
@@ -136,13 +127,16 @@ class Auth extends Component {
 const mapStateToProps = state => (
   {
     loading: state.auth.loading,
-    error: state.auth.error
+    error: state.auth.error,
+    isAuthenticated: state.auth.token !== null,
+    authRedirectPath: state.auth.authRedirectPath
   }
 );
 
 const mapDispatchToProps = dispatch => (
   {
-    onAuth: (email, password, isSignUp) => dispatch(action.auth(email, password, isSignUp))
+    onAuth: (email, password, isSignUp) => dispatch(action.auth(email, password, isSignUp)),
+    onAuthRedirect: () => dispatch(action.setAuthRedirectPath())
   }
 );
 

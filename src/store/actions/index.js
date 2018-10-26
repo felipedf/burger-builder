@@ -9,4 +9,7 @@ export {
 } from './orderAction'
 export {
   auth,
+  logout,
+  setAuthRedirectPath,
+  authCheckState
 } from './authAction'

@@ -8,6 +8,7 @@ import Input from '../../../components/UI/Input/Input';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../../middlewares/WithErrorHandler/WithErrorHandler';
 import * as action from "../../../store/actions";
+import { updateObject, checkValidity } from '../../../shared/utility'
 
 class ContactData extends Component {
   state = {
@@ -93,35 +94,17 @@ class ContactData extends Component {
     formIsValid: false,
   };
 
-  checkValidity(value, rules) {
-    let isValid = true;
-
-    if (rules.required) {
-      isValid = (value.trim() !== '') && isValid;
-    }
-
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-
-    return isValid;
-  }
-
-  handleInputChange = (inputID, e) => {
+  handleInputChange = (inputId, e) => {
     const inputValue = e.target.value;
-    const updatedOrderForm = {
-      ...this.state.orderForm,
-      [inputID]: {
-        ...this.state.orderForm[inputID],
-        value: inputValue,
-        valid: this.checkValidity(inputValue, this.state.orderForm[inputID].validation),
-        touched: true
-      },
-    };
+    const updatedFormElem = updateObject(this.state.orderForm[inputId], {
+      value: inputValue,
+      valid: checkValidity(inputValue, this.state.orderForm[inputId].validation),
+      touched: true
+    });
+
+    const updatedOrderForm = updateObject(this.state.orderForm, {
+      [inputId]: updatedFormElem
+    });
 
     let validForm = true;
     for (let field in updatedOrderForm) {
@@ -143,6 +126,7 @@ class ContactData extends Component {
     const order = {
       ingredients: this.props.ingredients,
       totalPrice: this.props.totalPrice,
+      userId: this.props.userId,
       orderData: formData
     };
 
@@ -194,7 +178,8 @@ const mapStateToProps = state => (
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
-    token: state.auth.token
+    token: state.auth.token,
+    userId: state.auth.userId
   }
 );
 
